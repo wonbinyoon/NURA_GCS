@@ -1,0 +1,8 @@
+.App {
+    display: flex;
+}
+
+.map {
+    border: 1px solid black;
+    margin-top: 20px;
+}
