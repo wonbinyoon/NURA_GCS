@@ -44,6 +44,7 @@ function NavMesh() {
   // navball 회전을 위한 함수
   useFrame(({ clock }) => {
     myMesh.current.rotation.x = clock.getElapsedTime();
+    myMesh.current.rotation.y = 0.0723 * clock.getElapsedTime();
   });
 
   // 텍스쳐 로딩

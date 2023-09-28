@@ -11,8 +11,8 @@ function Map() {
   const ref = useRef();
 
   // 지도 너비, 높이
-  const width = window.innerWidth - 360;
-  const height = window.innerHeight - 40;
+  const width = window.innerWidth > 660 ? window.innerWidth - 360 : 300;
+  const height = window.innerHeight > 700 ? window.innerHeight - 40 : 660;
 
   // div가 생성된 후 지도를 만들기 위한 useEffect
   useEffect(() => {
