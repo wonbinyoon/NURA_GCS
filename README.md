@@ -1,18 +1,28 @@
-# Getting Started with Create React App
+# 지상 통제 시스템
+## GROUND CONTROL SYSTEM
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+2023 NURA 대회 건국대학교 항공우주동아리 ASEC.
 
-## Available Scripts
+로켓으로부터 신호를 받아 GUI에 표시하기 위한 프로그램.\
+2023년 9월 17일 현재 GUI 레이아웃만 구현되어있다.\
+JS [React](https://react.dev)를 사용한 SPA 구현을 목표로 하고 있다.
 
-In the project directory, you can run:
+## 입력 가능한 스크립트
+
+위 코드를 클론한 뒤 윈도우 파워쉘 혹은 명령 프롬포트를 통해 해당 디렉토리로 접근 뒤 다음과 같은 스크립트를 입력할 수 있다.
+
+### `npm i`
+
+본 프로그램에서 사용하는 자바스크립트 라이브러리를 설치한다.\
+[`three.js`](https://threejs.org), [`maptalks`](https://maptalks.org) 등이 있다.
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+개발자 모드에서 앱을 실행한다..\
+[http://localhost:3000](http://localhost:3000)를 통해 웹 브라우저에서 볼 수 있다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+코드를 수정하면 새로고침된다.\
+또한 콘솔창을 통해 초기 오류 확인이 가능하다.
 
 ### `npm test`
 
@@ -21,13 +31,11 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`build` 폴더에 빌드한다.\
+js 코드의 용량을 최소화해 성능을 최적화 시킨다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+파일은 최소화되며 파일 이름에는 해쉬값이 포함된다.\
+앱을 배포할 수 있도록 한다.
 
 ### `npm run eject`
 
