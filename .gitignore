@@ -10,8 +10,11 @@
 
 # log
 /log
-__pychche__
 /.vscode
+
+#python
+*.pyc
+__pychche__/
 
 # production
 /build
