@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { socket, serIsOn } from "./socket";
 
 import * as maptalks from "maptalks";
 
@@ -7,14 +8,14 @@ import * as maptalks from "maptalks";
  * @returns 지도가 있는 div
  */
 function Map() {
-  // 지도 인스턴스가 남아있는지 검사하기 위한 레퍼런스
-  const ref = useRef();
+  const ref_map = useRef();
+  const ref_line = useRef();
+  const timeRef = useRef(-1);
 
-  // 지도 너비, 높이
   const width = window.innerWidth > 660 ? window.innerWidth - 360 : 300;
   const height = window.innerHeight > 700 ? window.innerHeight - 40 : 660;
 
-  // div가 생성된 후 지도를 만들기 위한 useEffect
+  // div가 생성된 후 한번 실행되는 함수
   useEffect(() => {
     // 지도
     const map = new maptalks.Map("map", {
@@ -27,38 +28,69 @@ function Map() {
         subdomains: ["a", "b", "c"],
       }),
     });
-    ref.current = map;
+    ref_map.current = map;
 
-    // 임시 선(line)
-    const line = new maptalks.LineString(
-      [
-        [127.0794723, 37.5405564],
-        [127.0794625, 37.5405462],
-        [127.0783527, 37.5405153],
-      ],
-      {
-        properties: {
-          altitude: [100, 125, 170],
-        },
-        symbol: {
-          lineColor: "rgb(255, 0, 55)",
-          lineWidth: 3,
-        },
-      }
-    );
+    // 지도 위 선
+    const line = new maptalks.LineString(undefined, {
+      properties: {
+        altitude: [],
+      },
+      symbol: {
+        lineColor: "rgb(255, 0, 55)",
+        lineWidth: 3,
+      },
+    });
+    ref_line.current = line; // 블록 밖에서도 선을 수정할 수 있게
 
-    // 지도에 선 긋기
-    new maptalks.VectorLayer("vector", [line], { enableAltitude: true }).addTo(
+    // 지도에 선을 긋는 벡터 레이어
+    new maptalks.VectorLayer("vector", line, { enableAltitude: true }).addTo(
       map
     );
 
-    return () => {
-      if (ref.current) {
-        // 이전에 실행한 maptalks.Map 인스턴스가 남아있는 경우
-        ref.current.remove(); // 제거
+    // socket
+    const edit_line = (data) => {
+      if (Array.isArray(data.pos) && data.pos.length !== 0) {
+        ref_map.current.setCenter(data.pos[data.pos.length - 1]);
+        const coords = ref_line.current.getCoordinates();
+        if (!coords) {
+          // 비어있으면
+          ref_line.current.setCoordinates(data.pos);
+          ref_line.current.setProperties({ altitude: data.alti });
+        } else {
+          // 안 비어있으면
+          ref_line.current.setCoordinates([...coords, ...data.pos]);
+          ref_line.current.setProperties({
+            altitude: [
+              ...ref_line.current.getProperties().altitude,
+              ...data.alti,
+            ],
+          });
+        }
+        timeRef.current = data.time;
       }
     };
+    socket.on("pull_map_data", edit_line); // socket 이벤트 추가
+
+    let interval = setInterval(() => {
+      if (serIsOn) {
+        socket.emit("get_map_data", timeRef.current);
+      }
+    }, 1000);
+
+    return () => {
+      // 언마운트시 실행
+      if (ref_map.current) {
+        // 이전에 실행한 maptalks.Map 인스턴스가 남아있는 경우
+        ref_map.current.remove(); // 제거
+      }
+      if (ref_line.current) {
+        ref_line.current.remove();
+      }
+      socket.off("pull_map_data", edit_line); // socket 이벤트 제거
+      clearInterval(interval);
+    };
   }, []);
+
   return (
     <>
       <div id="map" style={{ width: width, height: height }}></div>
