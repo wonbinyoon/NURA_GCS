@@ -13,7 +13,7 @@ function Map() {
   const timeRef = useRef(-1);
 
   const width = window.innerWidth > 660 ? window.innerWidth - 360 : 300;
-  const height = window.innerHeight > 700 ? window.innerHeight - 40 : 660;
+  const height = window.innerHeight > 700 ? window.innerHeight - 160 : 540;
 
   // div가 생성된 후 한번 실행되는 함수
   useEffect(() => {

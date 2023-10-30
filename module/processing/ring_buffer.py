@@ -229,9 +229,11 @@ class ImuDataBuf:
             "acc": imu.acc.copy(),
             "gyro": imu.gyro.copy(),
             "mag": imu.mag.copy(),
+            "euler": imu.euler.copy(),
             "temp": imu.temp,
             "press": imu.press,
             "p_alt": imu.p_alt,
+            "ejection": imu.ejection,
         }
         self._imu_buf.enqueue(data)
 

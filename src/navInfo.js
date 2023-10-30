@@ -18,6 +18,8 @@ function NavInfo() {
   const [ap, apSet] = useState(0.0);
   const [t_ap, t_apSet] = useState(0.0);
 
+  const [ejection, ejectionSet] = useState("미사출");
+
   const timeRef = useRef({ imu: -1, gps: -1 });
 
   useEffect(() => {
@@ -35,6 +37,18 @@ function NavInfo() {
       accelSet(a);
       h_accelSet(h_a);
       v_accelSet(v_a);
+
+      if (imu_data.ejection === 0) {
+        ejectionSet("미사출");
+      } else if (imu_data.ejection === 1) {
+        ejectionSet("자세");
+      } else if (imu_data.ejection === 2) {
+        ejectionSet("고도");
+      } else if (imu_data.ejection === 3) {
+        ejectionSet("타이머");
+      } else {
+        ejectionSet("에러");
+      }
     };
     socket.on("here_are_your_imu", set_imu);
 
@@ -82,18 +96,25 @@ function NavInfo() {
 
   return (
     <div className="info-container" style={{ height: height }}>
-      <h3>정보</h3>
-      <table>
+      <h3 style={{ paddingTop: "10px" }}>정보</h3>
+      <table
+        style={{
+          margin: "auto",
+          borderCollapse: "collapse",
+          width: "200px",
+          fontSize: "13px",
+        }}
+      >
         <tbody>
           <tr>
             <th>속력</th>
             <td>{vel.toFixed(2)} m/s</td>
           </tr>
-          <tr style={{ border: "none", fontSize: "13px" }}>
+          <tr style={{ border: "none" }}>
             <th>수평속도</th>
             <td>{h_vel.toFixed(2)} m/s</td>
           </tr>
-          <tr style={{ fontSize: "13px" }}>
+          <tr>
             <th>수직속도</th>
             <td>{v_vel.toFixed(2)} m/s</td>
           </tr>
@@ -103,13 +124,13 @@ function NavInfo() {
               {accel.toFixed(2)} m/s<sup>2</sup>
             </td>
           </tr>
-          <tr style={{ border: "none", fontSize: "13px" }}>
+          <tr style={{ border: "none" }}>
             <th>수평가속도</th>
             <td>
               {h_accel.toFixed(2)} m/s<sup>2</sup>
             </td>
           </tr>
-          <tr style={{ fontSize: "13px" }}>
+          <tr>
             <th>수직가속도</th>
             <td>
               {v_accel.toFixed(2)} m/s<sup>2</sup>
@@ -119,13 +140,17 @@ function NavInfo() {
             <th>고도</th>
             <td>{alti.toFixed(1)} m</td>
           </tr>
-          <tr style={{ border: "none", fontSize: "13px" }}>
+          <tr>
             <th>최고점</th>
             <td>{ap.toFixed(1)} m</td>
           </tr>
-          <tr style={{ fontSize: "13px" }}>
+          <tr>
             <th>도달 시간</th>
             <td>{t_ap.toFixed(1)} s</td>
+          </tr>
+          <tr>
+            <th>사출</th>
+            <td>{ejection}</td>
           </tr>
         </tbody>
       </table>

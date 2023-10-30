@@ -3,8 +3,8 @@ import struct
 
 from .data_struct import GpsData, ImuData
 
-HEADER1 = b"\xB5"
-HEADER2 = b"\x62"
+HEADER1 = b"\xFF"  # 헤더 수정
+HEADER2 = b"\xFE"
 
 MSG_IMU = 0x01
 MSG_GPS = 0x02
@@ -84,7 +84,7 @@ class Decoder:
         buf = self.buf[0 : self.len]
 
         if self.msg_type == MSG_IMU:
-            payload = struct.unpack("<xxxxIffffffffffffx", buf)
+            payload = struct.unpack("<xxxxIfffffffffffffffbx", buf)
 
             self.timestamp = payload[0]
             self.imuData.acc[0] = payload[1]
@@ -96,27 +96,33 @@ class Decoder:
             self.imuData.mag[0] = payload[7]
             self.imuData.mag[1] = payload[8]
             self.imuData.mag[2] = payload[9]
-            self.imuData.temp = payload[10]
-            self.imuData.press = payload[11]
-            self.imuData.p_alt = payload[12]
+            self.imuData.euler[0] = payload[10]
+            self.imuData.euler[1] = payload[11]
+            self.imuData.euler[2] = payload[12]
+            self.imuData.temp = payload[13]
+            self.imuData.press = payload[14]
+            self.imuData.p_alt = payload[15]
+
+            self.imuData.ejection = payload[16]
 
             self.new_imu_update = True
 
         elif self.msg_type == MSG_GPS:
-            payload = struct.unpack("<xxxxffffffcx", buf)
+            payload = struct.unpack("<xxxxIffffffbx", buf)
 
-            self.gpsData.lat = payload[0]
+            self.timestamp = payload[0]
             self.gpsData.lon = payload[1]
-            self.gpsData.height = payload[2]
-            self.gpsData.velN = payload[3]
-            self.gpsData.velE = payload[4]
-            self.gpsData.velD = payload[5]
-            self.gpsData.fixType = byte2char(payload[6])
+            self.gpsData.lat = payload[2]
+            self.gpsData.height = payload[3]
+            self.gpsData.velN = payload[4]
+            self.gpsData.velE = payload[5]
+            self.gpsData.velD = payload[6]
+            self.gpsData.fixType = payload[7]
 
             self.new_gps_update = True
 
         elif self.msg_type == MSG_IMU_GPS:
-            payload = struct.unpack("<xxxxIffffffffffffffffffcx", buf)
+            payload = struct.unpack("<xxxxIfffffffffffffffffffffbbx", buf)
 
             self.timestamp = payload[0]
             self.imuData.acc[0] = payload[1]
@@ -128,17 +134,22 @@ class Decoder:
             self.imuData.mag[0] = payload[7]
             self.imuData.mag[1] = payload[8]
             self.imuData.mag[2] = payload[9]
-            self.imuData.temp = payload[10]
-            self.imuData.press = payload[11]
-            self.imuData.p_alt = payload[12]
+            self.imuData.euler[0] = payload[10]
+            self.imuData.euler[1] = payload[11]
+            self.imuData.euler[2] = payload[12]
+            self.imuData.temp = payload[13]
+            self.imuData.press = payload[14]
+            self.imuData.p_alt = payload[15]
 
-            self.gpsData.lat = payload[13]
-            self.gpsData.lon = payload[14]
-            self.gpsData.height = payload[15]
-            self.gpsData.velN = payload[16]
-            self.gpsData.velE = payload[17]
-            self.gpsData.velD = payload[18]
-            self.gpsData.fixType = byte2char(payload[19])
+            self.gpsData.lon = payload[16]
+            self.gpsData.lat = payload[17]
+            self.gpsData.height = payload[18]
+            self.gpsData.velN = payload[19]
+            self.gpsData.velE = payload[20]
+            self.gpsData.velD = payload[21]
+            self.gpsData.fixType = payload[22]
+
+            self.imuData.ejection = payload[23]
 
             self.new_imu_update = True
             self.new_gps_update = True

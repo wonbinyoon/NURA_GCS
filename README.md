@@ -19,7 +19,7 @@ Javascript 라이브러리 [React](https://react.dev)를 사용해 Single Page A
 윈도우 PowerShell에서 아래의 명령어를 입력해 저장소를 복제한다.
 
 ```
-$ git clone https://github.com/wonbinyoon/NURA_GCS.git
+git clone https://github.com/wonbinyoon/NURA_GCS.git
 ```
 
 3. 파이썬 라이브러리 설치

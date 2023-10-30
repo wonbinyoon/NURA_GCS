@@ -16,6 +16,8 @@ class ImuData:
         self.acc = [0.0, 0.0, 0.0]
         self.gyro = [0.0, 0.0, 0.0]
         self.mag = [0.0, 0.0, 0.0]
+        self.euler = [0.0, 0.0, 0.0]
         self.temp = 0
         self.press = 0
         self.p_alt = 0
+        self.ejection = 0  # 0: 기본 1: 자세사출 2: 고도사출 3: 타이머사출
