@@ -20,7 +20,7 @@ function CFG() {
         inputDisableSet(true);
       } else {
         // 연결 안된 경우
-        if (Array.isArray(data.port_list) && data.port_list === 0) {
+        if (data.port_list.length === 0) {
           portSet(undefined);
         } else {
           portSet(data.port_list[0][0]);
