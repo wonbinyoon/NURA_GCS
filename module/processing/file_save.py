@@ -15,7 +15,7 @@ class Saver:
             f.write(f"{imu.euler[0]},{imu.euler[1]},{imu.euler[2]},")
             f.write(f"{imu.temp},{imu.press},{imu.p_alt},")
             f.write(f"{gps.fixType},{gps.lon},{gps.lat},{gps.height},")
-            f.write(f"{gps.velN},{gps.velE},{gps.velD}")
+            f.write(f"{gps.velN},{gps.velE},{gps.velD},")
             f.write(f"{imu.ejection}\n")
 
     def save_test(self, i):

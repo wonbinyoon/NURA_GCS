@@ -52,8 +52,11 @@ function NavMesh(props) {
   const [euler, eulerSet] = useState([0.0, 0.0, 0.0]);
 
   useEffect(() => {
-    eulerSet(props.euler);
     myMesh.current.rotation.order = "YXZ";
+  }, []);
+
+  useEffect(() => {
+    eulerSet(props.euler);
     myMesh.current.rotation.z = euler[0]; // roll
     myMesh.current.rotation.x = euler[1]; // pitch
     myMesh.current.rotation.y = euler[2]; // yaw
