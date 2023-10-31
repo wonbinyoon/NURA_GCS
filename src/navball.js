@@ -1,5 +1,5 @@
 // import { createRoot } from "react-dom/client";
-import React from "react";
+import { useState, useEffect, useRef } from "react";
 import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
@@ -10,7 +10,16 @@ import "./navball.css";
  * 3D로 멋지게 출력함
  * @returns Navball 캔버스가 포함된 깔끔한 html 구문
  */
-function Navball() {
+function Navball(props) {
+  const [euler, eulerSet] = useState([0.0, 0.0, 0.0]);
+
+  useEffect(() => {
+    console.log(euler);
+    if (Array.isArray(props.euler) && props.euler.length === 3) {
+      eulerSet(props.euler);
+    }
+  }, [props.euler]);
+
   return (
     <div id="navball-container">
       <Canvas
@@ -27,7 +36,7 @@ function Navball() {
         orthographic={true} // 멋진 orthographic 카메라
         flat={true} // 아카데미 색공간 말고 그냥 색공간 씁시다
       >
-        <NavMesh />
+        <NavMesh euler={euler} />
       </Canvas>
     </div>
   );
@@ -38,14 +47,17 @@ function Navball() {
  * mesh가 canvas 안에 있으니까 오류가 떠서 이렇게 분리함.
  * @returns navball을 three.js로 랜더링한 그거
  */
-function NavMesh() {
-  const myMesh = React.useRef();
+function NavMesh(props) {
+  const myMesh = useRef();
+  const [euler, eulerSet] = useState([0.0, 0.0, 0.0]);
 
-  // navball 회전을 위한 함수
-  useFrame(({ clock }) => {
-    myMesh.current.rotation.x = clock.getElapsedTime();
-    myMesh.current.rotation.y = 0.0723 * clock.getElapsedTime();
-  });
+  useEffect(() => {
+    eulerSet(props.euler);
+    myMesh.current.rotation.order = "YXZ";
+    myMesh.current.rotation.z = euler[0]; // roll
+    myMesh.current.rotation.x = euler[1]; // pitch
+    myMesh.current.rotation.y = euler[2]; // yaw
+  }, [props.euler]);
 
   // 텍스쳐 로딩
   const navTexture = useLoader(TextureLoader, "navball.png");

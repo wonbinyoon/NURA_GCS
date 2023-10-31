@@ -247,6 +247,40 @@ class ImuDataBuf:
         data["time"] = time
         return data
 
+    def get_from(self, target: int) -> dict | None:
+        """특정 시간 다음부터의 위치 데이터를 딕셔너리 형태로 출력하는 함수.
+
+        Args:
+            target (int): 타겟 시간.
+
+        Returns:
+            dict | None: 위치 데이터. 유효하지 않은 시간일 경우 None 반환.
+        """
+        if self._time.get_recent() == target:
+            print("ring buffer: 이미 최신 데이터임")
+            return None
+
+        idx = self._time.binary_search(target)
+
+        if idx is None:  # 예외 처리
+            print("ring buffer: 시간 이진탐색 실패")
+            if self._time._isempty():  # 버퍼가 비어있을 시
+                print("버퍼가 비어있음")
+                return None
+            if self._time.is_expired(target):  # 가장 오래된 데이터보다 이전의 데이터를 입력했을 시
+                print("시간 만료됨, 전체 데이터 출력")
+                return {
+                    "imu": self._imu_buf.get_all(),
+                    "time": self._time.get_recent(),
+                }
+            print("유효하지 않은 데이터")
+            return None
+
+        return {
+            "imu": self._imu_buf.get_from(idx, include_start=False),
+            "time": self._time.get_recent(),
+        }
+
 
 class GpsDataBuf:
     def __init__(self, size: int):
@@ -278,6 +312,40 @@ class GpsDataBuf:
 
         data["time"] = time
         return data
+
+    def get_from(self, target: int) -> dict | None:
+        """특정 시간 다음부터의 위치 데이터를 딕셔너리 형태로 출력하는 함수.
+
+        Args:
+            target (int): 타겟 시간.
+
+        Returns:
+            dict | None: 위치 데이터. 유효하지 않은 시간일 경우 None 반환.
+        """
+        if self._time.get_recent() == target:
+            print("ring buffer: 이미 최신 데이터임")
+            return None
+
+        idx = self._time.binary_search(target)
+
+        if idx is None:  # 예외 처리
+            print("ring buffer: 시간 이진탐색 실패")
+            if self._time._isempty():  # 버퍼가 비어있을 시
+                print("버퍼가 비어있음")
+                return None
+            if self._time.is_expired(target):  # 가장 오래된 데이터보다 이전의 데이터를 입력했을 시
+                print("시간 만료됨, 전체 데이터 출력")
+                return {
+                    "gps": self._gps_buf.get_all(),
+                    "time": self._time.get_recent(),
+                }
+            print("유효하지 않은 데이터")
+            return None
+
+        return {
+            "gps": self._gps_buf.get_from(idx, include_start=False),
+            "time": self._time.get_recent(),
+        }
 
 
 # if __name__ == "__main__":

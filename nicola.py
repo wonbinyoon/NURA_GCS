@@ -55,6 +55,14 @@ class bg_thread:
         if self.isOn():
             return self._gps_data_buf.get_recent()
 
+    def imu_data_from_time(self, time: int) -> dict | None:
+        if self.isOn():
+            return self._imu_data_buf.get_from(time)
+
+    def gps_data_from_time(self, time: int) -> dict | None:
+        if self.isOn():
+            return self._gps_data_buf.get_from(time)
+
     def bg_thread(self):
         """시리얼에서 데이터를 읽어오는 역할을 하는 별도 쓰레드에서 작동할 함수"""
         file_name = time.strftime("./log/#log_%y%m%d_%H%M%S.csv", time.localtime())

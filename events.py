@@ -63,10 +63,9 @@ def socketio_events(socketio, ser):
     @socketio.on("give_me_imu")
     def give_me_imu(time):
         if bg.isOn():
-            data = bg.imu_data_from_recent()
+            data = bg.imu_data_from_time(time)
             if not data is None:
-                if data["time"] != time:
-                    emit("here_are_your_imu", data)
+                emit("here_are_your_imu", data)
         else:
             info = {
                 "port": ser.port,
@@ -78,10 +77,9 @@ def socketio_events(socketio, ser):
     @socketio.on("give_me_gps")
     def give_me_gps(time):
         if bg.isOn():
-            data = bg.gps_data_from_recent()
+            data = bg.gps_data_from_time(time)
             if not data is None:
-                if data["time"] != time:
-                    emit("here_are_your_gps", data)
+                emit("here_are_your_gps", data)
         else:
             info = {
                 "port": ser.port,

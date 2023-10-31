@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import { socket, serIsOn } from "./socket";
+import { useState, useEffect } from "react";
 
 import "./navInfo.css";
 
-function NavInfo() {
+function NavInfo(props) {
   const height = window.innerHeight > 700 ? window.innerHeight - 360 : 340;
 
   const [vel, velSet] = useState(0.0);
@@ -20,79 +19,61 @@ function NavInfo() {
 
   const [ejection, ejectionSet] = useState("미사출");
 
-  const timeRef = useRef({ imu: -1, gps: -1 });
-
   useEffect(() => {
-    const set_imu = (imu_data) => {
-      timeRef.current.imu = imu_data.time;
+    if (Array.isArray(props.imu) && props.imu.length > 0) {
+      const lastidx = props.imu.length - 1;
 
       const g = 9.8;
 
       let h_a2 =
-        Math.pow(g * imu_data.acc[0], 2) + Math.pow(g * imu_data.acc[1], 2);
+        Math.pow(g * props.imu[lastidx].acc[0], 2) +
+        Math.pow(g * props.imu[lastidx].acc[1], 2);
       let h_a = Math.sqrt(h_a2);
-      let v_a = g * imu_data.acc[2];
+      let v_a = g * props.imu[lastidx].acc[2];
       let a = Math.sqrt(h_a2 + Math.pow(v_a, 2));
 
       accelSet(a);
       h_accelSet(h_a);
       v_accelSet(v_a);
 
-      if (imu_data.ejection === 0) {
+      if (props.imu[lastidx].ejection === 0) {
         ejectionSet("미사출");
-      } else if (imu_data.ejection === 1) {
+      } else if (props.imu[lastidx].ejection === 1) {
         ejectionSet("자세");
-      } else if (imu_data.ejection === 2) {
+      } else if (props.imu[lastidx].ejection === 2) {
         ejectionSet("고도");
-      } else if (imu_data.ejection === 3) {
+      } else if (props.imu[lastidx].ejection === 3) {
         ejectionSet("타이머");
       } else {
         ejectionSet("에러");
       }
-    };
-    socket.on("here_are_your_imu", set_imu);
+    }
+  }, [props.imu]);
 
-    const set_gps = (gps_data) => {
-      timeRef.current.gps = gps_data.time;
+  useEffect(() => {
+    if (Array.isArray(props.gps) && props.gps.length > 0) {
+      const lastidx = props.gps.length - 1;
 
-      let h2 = Math.pow(gps_data.velN, 2) + Math.pow(gps_data.velE, 2);
+      let h2 =
+        Math.pow(props.gps[lastidx].velN, 2) +
+        Math.pow(props.gps[lastidx].velE, 2);
       let h_velocity = Math.sqrt(h2);
-      let v_velocity = gps_data.velD;
+      let v_velocity = props.gps[lastidx].velD;
       let velocity = Math.sqrt(h2 + Math.pow(v_velocity, 2));
 
       velSet(velocity);
       h_velSet(h_velocity);
       v_velSet(v_velocity);
 
-      let altitute = gps_data.height;
+      let altitute = props.gps[lastidx].height;
       let apoapsis = altitute + Math.pow(v_velocity, 2) / 19.6;
       let timeToApoapsis = v_velocity / 9.8;
 
       altiSet(altitute);
       apSet(apoapsis);
       t_apSet(timeToApoapsis);
-    };
-    socket.on("here_are_your_gps", set_gps);
-
-    let imuInt = setInterval(() => {
-      if (serIsOn) {
-        socket.emit("give_me_imu", timeRef.current.imu);
-      }
-    }, 500);
-
-    let gpsInt = setInterval(() => {
-      if (serIsOn) {
-        socket.emit("give_me_gps", timeRef.current.gps);
-      }
-    }, 1000);
-
-    return () => {
-      socket.off("here_are_your_imu", set_imu);
-      socket.off("here_are_your_gps", set_gps);
-      clearInterval(imuInt);
-      clearInterval(gpsInt);
-    };
-  }, []);
+    }
+  }, [props.gps]);
 
   return (
     <div className="info-container" style={{ height: height }}>

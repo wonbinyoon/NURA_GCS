@@ -92,6 +92,7 @@ function CFG() {
             <h3 style={{ padding: "0", margin: "10px 0" }}>설정</h3>
             <p style={{ margin: "0" }}>시리얼 포트</p>
             <select
+              id="serial-port"
               style={{ width: "200px", margin: "0 auto" }}
               disabled={inputDisable ? true : false}
               onChange={(e) => {
@@ -106,6 +107,7 @@ function CFG() {
             </select>
             <p style={{ margin: "0" }}>보드레이트</p>
             <select
+              id="baudrate"
               style={{ width: "200px", margin: "0 auto" }}
               disabled={inputDisable ? true : false}
               onChange={(e) => {
