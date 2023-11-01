@@ -49,17 +49,20 @@ function Navball(props) {
  */
 function NavMesh(props) {
   const myMesh = useRef();
+  const rollGroup = useRef();
+  const pitchGroup = useRef();
+  const yawGroup = useRef();
   const [euler, eulerSet] = useState([0.0, 0.0, 0.0]);
 
   useEffect(() => {
-    myMesh.current.rotation.order = "YXZ";
+    myMesh.current.rotation.y = (3.0 * 3.141592) / 2.0;
   }, []);
 
   useEffect(() => {
     eulerSet(props.euler);
-    myMesh.current.rotation.z = euler[0]; // roll
-    myMesh.current.rotation.x = euler[1]; // pitch
-    myMesh.current.rotation.y = euler[2]; // yaw
+    rollGroup.current.rotation.z = euler[0]; // roll
+    pitchGroup.current.rotation.x = euler[1]; // pitch
+    yawGroup.current.rotation.y = euler[2]; // yaw
   }, [props.euler]);
 
   // 텍스쳐 로딩
@@ -67,10 +70,16 @@ function NavMesh(props) {
   navTexture.anisotropy = 16;
 
   return (
-    <mesh ref={myMesh}>
-      <sphereGeometry args={[40, 48, 32]} />
-      <meshBasicMaterial map={navTexture} />
-    </mesh>
+    <group ref={rollGroup}>
+      <group ref={pitchGroup}>
+        <group ref={yawGroup}>
+          <mesh ref={myMesh}>
+            <sphereGeometry args={[40, 48, 32]} />
+            <meshBasicMaterial map={navTexture} />
+          </mesh>
+        </group>
+      </group>
+    </group>
   );
 }
 
