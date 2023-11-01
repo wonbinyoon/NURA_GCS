@@ -27,6 +27,7 @@ git clone https://github.com/wonbinyoon/NURA_GCS.git
 복제한 디렉토리로 이동한 뒤 필요한 파이썬 라이브러리(Flask, Flask-SocketIO, pyserial)를 설치한다.
 
 ```
+cd .\NURA_GCS\
 pip install -r requirements.txt
 ```
 
