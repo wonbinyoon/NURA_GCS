@@ -34,7 +34,7 @@ function App() {
         let coordList = [];
         let altList = [];
         data.gps.map((value) => {
-          coordList.push([value.lat, value.lon]);
+          coordList.push([value.lon, value.lat]);
           altList.push(value.height);
         });
         coordSet((coord) => [...coord, ...coordList]);
