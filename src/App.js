@@ -46,12 +46,12 @@ function App() {
       if (serIsOn) {
         socket.emit("give_me_imu", timeRef.current.imu);
       }
-    }, 500);
+    }, 15);
     let gpsInt = setInterval(() => {
       if (serIsOn) {
         socket.emit("give_me_gps", timeRef.current.gps);
       }
-    }, 1000);
+    }, 30);
 
     return () => {
       socket.off("here_are_your_imu", set_imu);
