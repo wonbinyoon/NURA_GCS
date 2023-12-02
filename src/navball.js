@@ -65,7 +65,7 @@ function NavMesh(props) {
     eulerSet(props.euler);
     rollGroup.current.rotation.z = euler[0] * DEG2RAD; // roll
     pitchGroup.current.rotation.x = euler[1] * DEG2RAD; // pitch
-    yawGroup.current.rotation.y = euler[2] * DEG2RAD; // yaw
+    yawGroup.current.rotation.y = -euler[2] * DEG2RAD; // yaw
   }, [props.euler]);
 
   // 텍스쳐 로딩
