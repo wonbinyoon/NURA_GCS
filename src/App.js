@@ -16,6 +16,10 @@ function App() {
   const [alt, altSet] = useState([]);
   const timeRef = useRef({ imu: -1, gps: -1 });
 
+  const serialInputRef = useRef();
+  const serialInputWidth =
+    window.innerWidth > 660 ? window.innerWidth - 360 : 300;
+
   useEffect(() => {
     const set_imu = (data) => {
       if (Array.isArray(data.imu) && data.imu.length > 0) {
@@ -41,6 +45,12 @@ function App() {
 
     socket.on("here_are_your_imu", set_imu);
     socket.on("here_are_your_gps", set_gps);
+
+    const serialAck = (data) => {
+      console.log("시리얼을 통해 성공적으로 전송됨: %s", data);
+    };
+
+    socket.on("serialAck", serialAck);
 
     let imuInt = setInterval(() => {
       if (serIsOn) {
@@ -70,6 +80,41 @@ function App() {
         <NavInfo imu={imu} gps={gps} />
       </div>
       <div className="map">
+        <div
+          className="serial-input"
+          style={{
+            height: "30px",
+            marginBottom: "10px",
+          }}
+        >
+          <input
+            ref={serialInputRef}
+            style={{
+              width: "500px",
+              height: "100%",
+              float: "left",
+            }}
+            type="text"
+            placeholder={"시리얼로 전송할 값 입력"}
+          ></input>
+          <button
+            style={{
+              width: "70px",
+              height: "100%",
+              float: "left",
+            }}
+            onClick={() => {
+              if (serialInputRef.current.value) {
+                socket.emit("serialInput", serialInputRef.current.value);
+                console.log("값 '%s'가 전송됨", serialInputRef.current.value);
+              } else {
+                console.log("input에 값이 없음");
+              }
+            }}
+          >
+            전송
+          </button>
+        </div>
         <Map coord={coord} alt={alt} />
       </div>
     </div>

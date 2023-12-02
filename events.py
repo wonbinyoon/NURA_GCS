@@ -87,3 +87,13 @@ def socketio_events(socketio, ser):
                 "port_list": ser.ser_list(),
             }
             emit("current_ser_info", info, broadcast=False)
+
+    @socketio.on("serialInput")
+    def serialInput(data):
+        if bg.isOn():
+            try:
+                bg.ser.write(str.encode(data))
+            except:
+                print(f"{data} 전송 실패")
+            else:
+                emit("serialAck", data)
