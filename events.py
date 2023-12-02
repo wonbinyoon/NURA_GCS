@@ -97,3 +97,5 @@ def socketio_events(socketio, ser):
                 print(f"{data} 전송 실패")
             else:
                 emit("serialAck", data)
+        else:
+            print(f"시리얼 꺼져있음: {data} 전송 실패")
