@@ -26,10 +26,10 @@ function NavInfo(props) {
       const g = 9.8;
 
       let h_a2 =
-        Math.pow(g * props.imu[lastidx].acc[0], 2) +
-        Math.pow(g * props.imu[lastidx].acc[1], 2);
+        Math.pow(g * props.imu[lastidx].acc[1], 2) + // y축
+        Math.pow(g * props.imu[lastidx].acc[2], 2); // z축
       let h_a = Math.sqrt(h_a2);
-      let v_a = g * props.imu[lastidx].acc[2];
+      let v_a = g * props.imu[lastidx].acc[0]; // x축
       let a = Math.sqrt(h_a2 + Math.pow(v_a, 2));
 
       accelSet(a);
