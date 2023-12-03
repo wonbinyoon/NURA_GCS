@@ -17,7 +17,7 @@ function Map(props) {
   useEffect(() => {
     // 지도
     const map = new maptalks.Map("map", {
-      center: [127.0794723, 37.5405464],
+      center: [127.205438, 34.609169],
       zoom: 17,
       pitch: 40,
       centerCross: true,

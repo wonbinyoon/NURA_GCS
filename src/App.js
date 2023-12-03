@@ -34,8 +34,12 @@ function App() {
         let coordList = [];
         let altList = [];
         data.gps.map((value) => {
-          coordList.push([value.lon, value.lat]);
-          altList.push(value.height);
+          if (value.lon === 0.0 && value.lat === 0.0) {
+            // do nothing
+          } else {
+            coordList.push([value.lon, value.lat]);
+            altList.push(value.height);
+          }
         });
         coordSet((coord) => [...coord, ...coordList]);
         altSet((alt) => [...alt, ...altList]);
